@@ -18,7 +18,7 @@ services:
     environment:
       POSTGRES_DB: postgres
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: password1.
+      POSTGRES_PASSWORD: Password1.
     restart: unless-stopped
 
   proxy:
