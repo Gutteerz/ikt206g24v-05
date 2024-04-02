@@ -2,8 +2,6 @@
 
 services:
   web:
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
     build:
       context: .
       dockerfile: Dockerfile
