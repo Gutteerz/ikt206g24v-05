@@ -1,3 +1,0 @@
-﻿krembolle.no {
-  reverse_proxy web:8080
-}
