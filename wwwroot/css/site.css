@@ -14,14 +14,13 @@ html {
 }
 
 body {
-  background-image: url('../images/krembolle.jpg');
+  background-image: url('/images/krembolle.jpg');
   background-size: cover; /* Cover the entire page */
   background-position: center; /* Center the background image */
   background-repeat: no-repeat; /* Do not repeat the image */
   margin-bottom: 60px;
 }
 
-/* Add this at the end of your site.css file */
 .home-background {
   background-image: url('../images/krembolle.jpg'); /* Ensure the path is correct */
   background-size: cover;
