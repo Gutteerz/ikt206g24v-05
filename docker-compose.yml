@@ -1,38 +1,50 @@
-﻿version: '3.4'
-
+version: '3'
 services:
   web:
-    build: .
-    command: ["/app/wait-for-it.sh", "db:5432", "--", "dotnet", "Example.dll"]
+    build:
+      context: .
+      target: final
     ports:
       - "8080:80"
     depends_on:
       - db
-    restart: unless-stopped
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ConnectionStrings__DefaultConnection=Host=db;Port=5432;Database=assignment5;Username=hiphopgutt1;Password=hiphopgutt1;
 
   db:
-    image: postgres:latest
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
+    image: postgres
     environment:
-      POSTGRES_DB: postgres
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: Password1.
-    restart: unless-stopped
+      - POSTGRES_DB=assignment5
+      - POSTGRES_USER=hiphopgutt1
+      - POSTGRES_PASSWORD=hiphopgutt1
+    volumes:
+      - db_data:/var/lib/postgresql/data
 
   proxy:
-    image: caddy:latest
+    image: caddy
     ports:
       - "80:80"
       - "443:443"
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile
-      - ./caddy_data:/data
-      - ./caddy_config:/config
-    restart: unless-stopped
+      - caddy_data:/data
+      - caddy_config:/config
+
+  migration:
+    build:
+      context: .
+      target: migration-env
     depends_on:
-      - web
+      - db
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ConnectionStrings__DefaultConnection=Host=db;Port=5432;Database=assignment5;Username=hiphopgutt1;Password=hiphopgutt1;
+    volumes:
+      - .:/app
+    entrypoint: ["dotnet", "ef"]
 
 volumes:
-  postgres_data:
-
+  db_data:
+  caddy_data:
+  caddy_config:

@@ -1,24 +1,33 @@
-﻿FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build-env
-WORKDIR /App
+﻿# SDK image to build the project
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build-env
+WORKDIR /app
 
-# Install curl if it's not already available in your base image
-RUN apt-get update && apt-get install -y curl
+# Copy the .csproj file and restore any dependencies (via nuget)
+COPY ["Example.csproj", "./"]
+RUN dotnet restore "Example.csproj"
 
-# Download wait-for-it script
-RUN curl -o wait-for-it.sh https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh \
-    && chmod +x wait-for-it.sh
+# Copy the project files and build for release
+COPY . .
+RUN dotnet publish "Example.csproj" -c Release -o out
 
+# SDK image for migrations
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS migration-env
+WORKDIR /app
 
-# Copy everything
-COPY . ./
-# Restore as distinct layers
-RUN dotnet restore
-# Build and publish a release
-RUN dotnet publish -c Release -o out
+# Install EF Core CLI tools
+RUN dotnet tool install --global dotnet-ef
+ENV PATH="${PATH}:/root/.dotnet/tools"
 
-# Build runtime image
-FROM mcr.microsoft.com/dotnet/aspnet:8.0
-WORKDIR /App
-COPY --from=build-env /App/out .
-ENTRYPOINT ["dotnet", "Example.dll"]
+COPY --from=build-env /app/out .
+COPY --from=build-env /app/Example.csproj .
 
+# Runtime image
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
+WORKDIR /app
+COPY --from=build-env /app/out .
+
+# Copy wait-for-it.sh into the image
+COPY wait-for-it.sh /wait-for-it.sh
+RUN chmod +x /wait-for-it.sh
+
+ENTRYPOINT [ "/wait-for-it.sh", "db:5432", "--", "dotnet", "Example.dll" ]
