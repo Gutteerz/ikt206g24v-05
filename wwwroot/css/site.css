@@ -13,10 +13,11 @@ html {
   min-height: 100%;
 }
 
-div {
-  background-image: url("krembolle.jpg");
-}
-
 body {
+  background-image: url('../images/krembolle.jpg');
+  background-size: cover; /* Cover the entire page */
+  background-position: center; /* Center the background image */
+  background-repeat: no-repeat; /* Do not repeat the image */
   margin-bottom: 60px;
 }
+
