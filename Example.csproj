@@ -22,10 +22,4 @@
   <ItemGroup>
     <Folder Include="wwwroot\images\" />
   </ItemGroup>
-  <ItemGroup>
-    <Content Update="krembolle.jpg">
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-  </ItemGroup>
 </Project>

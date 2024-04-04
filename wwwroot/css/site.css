@@ -13,7 +13,10 @@ html {
   min-height: 100%;
 }
 
+div {
+  background-image: url("krembolle.jpg");
+}
+
 body {
   margin-bottom: 60px;
-  background-image: url(./krembolle.jpg);
 }
