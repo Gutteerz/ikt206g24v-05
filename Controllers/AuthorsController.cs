@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Example.Data;
 using Example.Models;
+using Microsoft.Extensions.Logging;
 
 namespace Example.Controllers;
 
@@ -8,11 +9,13 @@ public class AuthorsController : Controller
 {
     // Added private field for the application db context
     private readonly ApplicationDbContext _db;
+    private readonly ILogger<AuthorsController> _logger;
     
     // Constructor with db context as a parameter
-    public AuthorsController(ApplicationDbContext db)
+    public AuthorsController(ApplicationDbContext db, ILogger<AuthorsController> logger)
     {
         _db = db;
+        _logger = logger;
     }
 
     // GET
@@ -36,13 +39,23 @@ public class AuthorsController : Controller
     public IActionResult Add(Author author)
     {
         // Return the page with the current form values if the model is invalid. Allows the user to fix their mistakes.
-        if (!ModelState.IsValid)
+        if (!ModelState.IsValid) {
+            _logger.LogWarning("Model State is invalid");
             return View(author);
+        }
 
-        // Add and save the new author
-        _db.Authors.Add(author);
-        _db.SaveChanges();
-        
+        try
+        {
+            // Add and save the new author
+            _db.Authors.Add(author);
+            _db.SaveChanges();
+            _logger.LogInformation("Author added successfully");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error adding author");
+        }
+
         // Return back to the index view (the one with the list of authors)
         return RedirectToAction(nameof(Index));
     }

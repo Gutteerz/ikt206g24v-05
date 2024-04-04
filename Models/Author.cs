@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Example.Models
 {
@@ -14,6 +15,7 @@ namespace Example.Models
             Birthdate = birthdate;
         }
 
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
         [Required]
@@ -28,8 +30,13 @@ namespace Example.Models
 
         [DataType(DataType.Date)]
         [DisplayName("Birthdate")]
-        public DateTime Birthdate { get; set; }
+        public DateTime Birthdate { 
+            get => _birthdate;
+            set => _birthdate = DateTime.SpecifyKind(value, DateTimeKind.Utc);
+        }
 
         public ICollection<Review> Reviews { get; set; } = new List<Review>();
+
+        private DateTime _birthdate;
     }
 }

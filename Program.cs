@@ -23,7 +23,6 @@ if (builder.Environment.IsDevelopment())
 }
 else
 {
-
     builder.Services.AddDbContext<ApplicationDbContext>(options =>
         options.UseNpgsql(connectionString));
 }
