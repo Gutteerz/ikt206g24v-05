@@ -21,3 +21,12 @@ body {
   margin-bottom: 60px;
 }
 
+/* Add this at the end of your site.css file */
+.home-background {
+  background-image: url('../images/krembolle.jpg'); /* Ensure the path is correct */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  height: 100vh; /* Full viewport height */
+  margin: 0; /* Remove default margin */
+}
