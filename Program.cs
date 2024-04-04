@@ -14,7 +14,7 @@ builder.Logging.SetMinimumLevel(LogLevel.Information);
 
 // Add services to the container.
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-/*
+
 // Configure DbContext to use SQLite in development and PostgreSQL in production
 if (builder.Environment.IsDevelopment())
 {
@@ -23,10 +23,10 @@ if (builder.Environment.IsDevelopment())
 }
 else
 {
-*/
+
     builder.Services.AddDbContext<ApplicationDbContext>(options =>
         options.UseNpgsql(connectionString));
-//}
+}
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
